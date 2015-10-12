@@ -1,0 +1,6 @@
+// This is a sample config file
+// Ask Amir for the parse IDs to get the app working
+var config = {};
+process.env.PARSEAPPID = '';
+process.env.PARSEJSKEY = '';
+module.exports = config;
