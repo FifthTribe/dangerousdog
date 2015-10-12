@@ -3,82 +3,25 @@ var express = require('express');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-var app     = express();
+var app = express();
+var Parse = require('parse/node');
 
-// Scraper to scrape thd dog URLs
-app.get('/getdogs', function(req, res){
+// Access the body posts content
+app.use(bodyParser.urlencoded({ extended: false }));
 
-  // The URL to scrape
-  var url = 'https://dd.va-vdacs.com/public/public.cgi?sysdogno=1161&submit=detail';
+// Check if we are on on AWS or not
+if (process.env.AWS == null || !process.env.AWS) {
+  // get the process environment variables for localhost
+  var config = require('./config');
+}
 
-  // Get the URL
-  request(url, function(error, response, html){
-    //console.log('response',response);
+// define the port
+var port = process.env.PORT || 8080;
 
-    if(!error) {
+// Controllers
+var getdogs = require('./controllers/getdogs');
 
-      // Get the HTML from cheerio
-      var $ = cheerio.load(html);
+app.get('/')
+app.get('/getdogs',getdogs.pullData);
 
-      // Finally, we'll define the variables we're going to capture
-      var title, release, rating;
-      var json = { title : "", release : "", rating : ""};
-
-      $('#ajaxcontentDog').filter(function(){
-
-        var dog = {};
-
-        // Get the entire DOM
-        var data = $(this);
-
-        // Get the county and the number of dog
-        var countyDogNumberInfo = $('p span.body3',data).get(0);
-
-        //Loop through each child object of the p tag with the county and number of dog and get the text
-        for (var x = 0; x < countyDogNumberInfo.children.length; x++){
-          var countyDogNumberInfoItem = countyDogNumberInfo.children[x];
-          if (countyDogNumberInfoItem.type === "text"){
-            // The text will be split by a :
-            var countNumberText = countyDogNumberInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "").split(':');
-            dog.county = countNumberText[0];
-            dog.number = countNumberText[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
-            dog.id = parseInt(countNumberText[1]);
-          }
-        }
-
-        // Get the p tag with the dog information
-        var dogInfoParagraph = $('p',data).get(2);
-
-        // Loop though each child object of the p tag object to get the text
-        for (var x = 0; x < dogInfoParagraph.children.length; x++){
-          var dogInfoItem = dogInfoParagraph.children[x];
-          if (dogInfoItem.type === "text"){
-            var dogDetails = dogInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "").split(':');
-            if ( dogDetails[0] === 'Name of Dangerous Dog'){
-              dog.name = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
-            }
-            if ( dogDetails[0] === 'Primary Breed'){
-              dog.primaryBreed = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
-            }
-            if ( dogDetails[0] === 'Secondary Breed'){
-              dog.secondaryBreed = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
-            }
-            if ( dogDetails[0] === 'Color and Markings'){
-              dog.colorAndMarkings = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
-            }
-          }
-        }
-
-        res.send('got dog info:<br />'+JSON.stringify(dog));
-      });
-
-    } else {
-      console.log('error',error);
-    }
-  })
-
-
-})
-
-app.listen('8080')
-exports = module.exports = app;
+app.listen(port);
