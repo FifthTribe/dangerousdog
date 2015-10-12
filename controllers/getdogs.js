@@ -32,7 +32,7 @@ module.exports.pullData = function(req, res){
             var ownerDetails = ownerInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
 
             // Owner name
-            if ( x ==== 2){
+            if ( x === 2){
               dog.set("owner",ownerDetails);
             }
 
@@ -45,7 +45,7 @@ module.exports.pullData = function(req, res){
             if ( x === 6 ){
               dog.set("cityStateZip",ownerDetails);
             }
-            
+
           }
         }
 
