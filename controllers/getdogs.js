@@ -67,7 +67,7 @@ module.exports.pullData = function(req, res){
           if (countyDogNumberInfoItem.type === "text"){
             // The text will be split by a :
             var countNumberText = countyDogNumberInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "").split(':');
-            dog.set("county",countNumberText[0]));
+            dog.set("county",countNumberText[0]);
             dog.set("numberText",countNumberText[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, ""));
             dog.set("number",parseInt(countNumberText[1].match(/\d/g).join('')));
           }
