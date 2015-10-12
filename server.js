@@ -26,11 +26,25 @@ app.get('/getdogs', function(req, res){
 
       $('#ajaxcontentDog').filter(function(){
 
-        // Var dogs
-        var dogs = [];
+        var dog = {};
 
         // Get the entire DOM
         var data = $(this);
+
+        // Get the county and the number of dog
+        var countyDogNumberInfo = $('p span.body3',data).get(0);
+
+        //Loop through each child object of the p tag with the county and number of dog and get the text
+        for (var x = 0; x < countyDogNumberInfo.children.length; x++){
+          var countyDogNumberInfoItem = countyDogNumberInfo.children[x];
+          if (countyDogNumberInfoItem.type === "text"){
+            // The text will be split by a :
+            var countNumberText = countyDogNumberInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "").split(':');
+            dog.county = countNumberText[0];
+            dog.number = countNumberText[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
+            dog.id = parseInt(countNumberText[1]);
+          }
+        }
 
         // Get the p tag with the dog information
         var dogInfoParagraph = $('p',data).get(2);
@@ -38,13 +52,24 @@ app.get('/getdogs', function(req, res){
         // Loop though each child object of the p tag object to get the text
         for (var x = 0; x < dogInfoParagraph.children.length; x++){
           var dogInfoItem = dogInfoParagraph.children[x];
-          var dog = [];
           if (dogInfoItem.type === "text"){
-            dog.push(dogInfoItem.data);
+            var dogDetails = dogInfoItem.data.replace(/\s+/g, " ").replace(/^\s|\s$/g, "").split(':');
+            if ( dogDetails[0] === 'Name of Dangerous Dog'){
+              dog.name = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
+            }
+            if ( dogDetails[0] === 'Primary Breed'){
+              dog.primaryBreed = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
+            }
+            if ( dogDetails[0] === 'Secondary Breed'){
+              dog.secondaryBreed = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
+            }
+            if ( dogDetails[0] === 'Color and Markings'){
+              dog.colorAndMarkings = dogDetails[1].replace(/\s+/g, " ").replace(/^\s|\s$/g, "");
+            }
           }
-          dogs.push(dog);
         }
-        res.send('got dog info:<br />'+dogs);
+
+        res.send('got dog info:<br />'+JSON.stringify(dog));
       });
 
     } else {
