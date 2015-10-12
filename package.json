@@ -1,0 +1,25 @@
+{
+  "name": "dangerousdog",
+  "version": "1.0.0",
+  "description": "Dangerous dog",
+  "main": "server.js",
+  "dependencies" : {
+    "express"    : "latest",
+    "request"    : "latest",
+    "cheerio"    : "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FifthTribe/dangerousdog.git"
+  },
+  "keywords": [
+    "Dangerous",
+    "Dog"
+  ],
+  "author": "Amir Sahib, Asif Khan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FifthTribe/dangerousdog/issues"
+  },
+  "homepage": "https://github.com/FifthTribe/dangerousdog#readme"
+}
